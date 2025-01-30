@@ -1,0 +1,91 @@
+import dns.resolver
+import logging
+import requests
+
+# Loglama ayarları
+logging.basicConfig(filename='dns_changes.log', level=logging.INFO, format='%(asctime)s - %(message)s')
+
+# DNS kayıt tipleri
+dns_types = ['A', 'AAAA', 'MX', 'NS', 'TXT', 'CNAME']
+
+# Parametre Yapısı
+# Zorunlu Parametreler:
+# {
+#     "domain": {
+#         "tip": "str",
+#         "açıklama": "Analiz edilecek domain adı"
+#     }
+# }
+
+# Opsiyonel Parametreler:
+# {
+#     "log_dosyasi": {
+#         "tip": "str",
+#         "varsayılan": "dns_changes.log",
+#         "açıklama": "Log dosyasının adı"
+#     }
+# }
+
+# Çıktı Formatı
+# {
+#     "sonuç": {
+#         "durum": "başarılı",
+#         "veri": {},
+#         "hata_mesajı": ""
+#     }
+# }
+
+# Domaini analiz eden fonksiyon
+def analyze_dns(domain):
+    logging.info(f"Analiz edilen domain: {domain}")
+    results = {}
+    for dns_type in dns_types:
+        try:
+            answers = dns.resolver.resolve(domain, dns_type)
+            records = [rdata.to_text() for rdata in answers]
+            results[dns_type] = records
+            logging.info(f"{dns_type} records: {records}")
+        except dns.resolver.NoAnswer:
+            logging.warning(f"No {dns_type} records found for domain {domain}")
+    return results
+
+# Zone transfer açıklıklarının tespiti (dummy implementation)
+def check_zone_transfer(domain):
+    logging.info(f"Checking zone transfer for domain: {domain}")
+    # Gerçek bir uygulamada, burada zone transfer açıklıklarını kontrol edebilirsiniz
+    return False  # Bu örnekte varsayılan olarak false döndürüyoruz
+
+# SPF, DMARC ve DKIM kayıtlarının güvenlik analizi (dummy implementation)
+def check_spf_dmarc_dkim(domain):
+    logging.info(f"Checking SPF, DMARC, and DKIM records for domain: {domain}")
+    # Gerçek bir uygulamada, burada ilgili kayıtları kontrol edebilirsiniz
+    return {"SPF": "pass", "DMARC": "pass", "DKIM": "pass"}  # Bu örnekte varsayılan olarak pass döndürüyoruz
+
+# Ana fonksiyon
+def main(domain):
+    results = analyze_dns(domain)
+    zone_transfer_open = check_zone_transfer(domain)
+    security_checks = check_spf_dmarc_dkim(domain)
+    
+    response = {
+        "sonuç": {
+            "durum": "başarılı",
+            "veri": {
+                "dns_kayitlari": results,
+                "zone_transfer_aciklik": zone_transfer_open,
+                "guvenlik_kontrolleri": security_checks
+            },
+            "hata_mesajı": ""
+        }
+    }
+    return response
+
+if __name__ == "__main__":
+    import sys
+    if len(sys.argv) < 2:
+        print("Usage: python dnskayitanalizi.py <domain>")
+        sys.exit(1)
+    
+    domain = sys.argv[1]
+    output = main(domain)
+    print(output)
