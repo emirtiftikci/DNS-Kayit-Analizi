@@ -1,4 +1,4 @@
-EMİRHAN TİFTİKCİ-2320191068
+#EMİRHAN TİFTİKCİ-2320191068
 DNS (Domain Name System) kayıt analizi, bir alan adının (domain) DNS kayıtlarını inceleyerek, ilgili bilgilerin doğruluğunu, geçerliliğini ve güvenliğini değerlendiren bir süreçtir. DNS kayıtları, internet üzerindeki kaynakların isimlendirilmesi ve yerlerinin belirlenmesi amacıyla kullanılır. Bu kayıtlar, bir alan adının hangi IP adreslerine yönlendirileceğini, hangi mail sunucularının kullanılacağını ve daha pek çok bilgiyi içerir.
 
 DNS Kayıt Analizinin Temel Amacı ve Faydaları:
